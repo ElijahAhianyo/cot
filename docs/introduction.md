@@ -111,14 +111,17 @@ impl App for CotTutorialApp {
 }
 ```
 
-This is how you specify the URL the view will be available at – in this case, the view is available at the root URL of your application. The `"index"` string is the name of the view, which you can use to reverse the URL in your templates – more on that in the next chapter.
+This is how you specify the URL the view will be available at – in this case, the view is available at the root URL of your application. The `"index"` string is the route name, which you can use to [generate URLs](../routing/#named-routes-and-url-generation) in your handlers and templates.
 
-You can add more views by adding more routes to the [`Router`](struct@cot::router::Router) by simply defining more functions and registering them in the [`router`](trait@cot::project::App#method.router) method:
+You can add more views by adding more routes to the [`Router`](struct@cot::router::Router) by defining more functions and registering them in the [`router`](trait@cot::project::App#method.router) method:
 
 ```rust
 # struct CotTutorialApp;
 # async fn index(_request: Request) -> cot::Result<Response> { todo!() }
-# async fn hello(_request: Request) -> cot::Result<Response> { todo!() }
+async fn hello() -> &'static str {
+    "Hello World!"
+}
+
 impl App for CotTutorialApp {
     fn router(&self) -> Router {
         Router::with_urls([
@@ -134,77 +137,7 @@ Now, when you visit [`localhost:8000/hello`](http://localhost:8000/hello) you sh
 
 ### Extractors and dynamic routes
 
-You can also define dynamic routes by using the [`Route::with_handler_and_name`](struct@cot::router::Route#method.with_handler_and_name) method with a parameter enclosed in curly braces (e.g. `{param_name}`). How do we get the parameter value in the request handler's body, though?
-
-At the core of Cot's request handling are _extractors_, which allow you to extract data from the request and pass it to the handler as arguments. One of such extractors is the [`Path`](struct@cot::request::extractors::Path) extractor, which allows you to extract path parameters from the URL. In order to use it, you need to define a parameter in the handler function, passing the parameter type as the generic parameter, like so:
-
-```rust
-# struct MyApp;
-# async fn index() -> cot::Result<Html> { todo!() }
-# async fn hello() -> cot::Result<Html> { todo!() }
-async fn hello_name(Path(name): Path<String>) -> cot::Result<Html> {
-    Ok(Html::new(format!("Hello, {}!", name)))
-}
-
-// inside `impl App`:
-# impl App for MyApp {
-fn router(&self) -> Router {
-    Router::with_urls([
-        Route::with_handler_and_name("/", index, "index"),
-        Route::with_handler_and_name("/hello", hello, "hello"),
-        Route::with_handler_and_name("/hello/{name}", hello_name, "hello_name"),
-    ])
-}
-#   fn name(&self) -> &str { todo!() }
-# }
-```
-
-This works for multiple parameters, too—you just need to define a tuple of parameters in the handler function:
-
-```rust
-# struct MyApp;
-async fn hello_name(Path((first_name, last_name)): Path<(String, String)>) -> cot::Result<Html> {
-    Ok(Html::new(format!("Hello, {first_name} {last_name}!")))
-}
-
-// inside `impl App`:
-# impl App for MyApp {
-fn router(&self) -> Router {
-    Router::with_urls([
-        // ...
-        Route::with_handler_and_name("/hello/{first_name}/{last_name}/", hello_name, "hello_name"),
-    ])
-}
-#   fn name(&self) -> &str { todo!() }
-# }
-```
-
-Now, when you visit [`localhost:8000/hello/John/Smith/`](http://localhost:8000/hello/John), you should see `Hello, John Smith!` displayed on the page!
-
-Cot also supports wildcard parameters to match all sub-paths within a route segment.
-
-```rust
-# struct MyApp;
-async fn wildcard_path(Path(path): Path<String>) -> cot::Result<Html> {
-    Ok(Html::new(format!("Passed path: {path}")))
-}
-
-// inside `impl App`:
-# impl App for MyApp {
-fn router(&self) -> Router {
-    Router::with_urls([
-        // ...
-        Route::with_handler_and_name("/wildcard/{*path}", wildcard_path, "wildcard_path"),
-    ])
-}
-#   fn name(&self) -> &str { todo!() }
-# }
-```
-
-Prefixing the parameter name with an asterisk (`*`) designates it as a wildcard.
-
-In this case, it matches `/wildcard/foo`, `/wildcard/foo/bar` and so on, but it won't match `/wildcard/`.
-Also note that, wildcard param can only be used on the end of path pattern.
+Routes can also capture values from a URL, such as an article ID, and pass them to a handler through an extractor. Continue with [routing](../routing/) to add path parameters, select handlers by HTTP method, group routes, and generate URLs by name.
 
 ## Project structure
 
