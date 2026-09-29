@@ -2,7 +2,7 @@
 FROM rust:1.97-trixie AS builder
 
 # Pin the renderer so changes on its branch cannot silently change this preview.
-ARG COT_SITE_REV=7d581e5c8addd6189bd5e4fcb5c5f23251733aa2
+ARG COT_SITE_REV=3823c4be8bfaad5a9f3e42763d9dd7ec095b1078
 WORKDIR /build/cot-site
 RUN git init . \
     && git remote add origin https://github.com/ElijahAhianyo/cot-site.git \

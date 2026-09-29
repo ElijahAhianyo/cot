@@ -49,7 +49,7 @@ features remain design documentation, not implemented integrations.
 
 - `src/navigation.rs` registers documentation areas, topic groups, and pages.
   Sidebar grouping is independent of page URLs.
-- The sibling `cot-site` library renders collapsible areas, topic groups,
+- The sibling `cot-site` library renders direct section links, open topic groups,
   breadcrumbs, page types, status labels, and the on-page contents list.
 - Rustdoc remains the API reference. The reference pages here index configuration,
   CLI commands, Cargo features, and component modules.
@@ -171,3 +171,30 @@ Open `http://127.0.0.1:18080/guide/master/`. These commands assume a new parent
 directory, with neither checkout already present. The [preview deployment recipe](deploy/README.md) includes both repositories
 without publishing crates. Content changes alone do not confirm that a hosted
 service has deployed the new revision.
+
+### Sidebar redesign
+
+The sidebar selects a documentation section with ordinary links, then exposes its
+pages beneath non-collapsible topic headings. This replaces area → group → page
+accordions with section → page navigation. The longer guide list has a topic jump
+menu. Only the page list scrolls; section selection and the Rust API link remain
+available. Keyboard users can skip to content or press `/` to focus search.
+
+Fundamentals now precede framework-transition topics in Guides. Existing URLs,
+breadcrumbs, tutorial sequences, and the navbar-only Blog destination are preserved.
+Preview pages use a subtle accessible draft marker; Proposed retains its visible badge.
+The mobile drawer follows the selected theme and reveals the current topic on opening.
+
+Research: [Johnson's navigation principles](https://idratherbewriting.com/files/doc-navigation-wtd/design-principles-for-doc-navigation/)
+informed shallow hierarchy and contextual navigation. [Diátaxis](https://diataxis.fr/start-here/)
+continues to define document purposes, without requiring nested disclosure controls.
+[Django 6.0 contents](https://docs.djangoproject.com/en/6.0/contents/) and
+[Laravel 13 routing navigation](https://laravel.com/framework/docs/13.x/routing)
+were reviewed for topic grouping and reader orientation. Microsoft's bundled style
+guide, “Scannable content” (PDF page 1098), informed short labels and visible headings.
+This is a design choice for the current content inventory, not a measured usability result.
+
+Validation: site build, all 91 registered URLs, 11,272 internal links, desktop/mobile
+navigation, search, topic jumping, dark mode, 320–1440px overflow checks, and historical
+v0.5 navigation. The crawler now seeds from the registry because a contextual sidebar
+intentionally doesn't put every documentation link on the home page.

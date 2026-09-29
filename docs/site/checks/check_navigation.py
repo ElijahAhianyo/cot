@@ -9,6 +9,8 @@ from html.parser import HTMLParser
 from urllib.parse import unquote, urldefrag, urljoin, urlparse
 from urllib.request import urlopen
 import sys
+import re
+from pathlib import Path
 
 
 class Page(HTMLParser):
@@ -39,8 +41,11 @@ def main():
     base = sys.argv[1] if len(sys.argv) > 1 else "http://127.0.0.1:18080/guide/master/"
     canonical, home = fetch(base)
     assert "Cot documentation" in " ".join(home.text), "Expected the new documentation landing page"
-    urls = {urldefrag(urljoin(canonical, link))[0] for link in home.links}
-    urls = sorted(url for url in urls if url.startswith(base))
+    # Section-scoped sidebars intentionally do not expose every page on home.
+    # Seed from the registry so even an accidentally orphaned page is checked.
+    registry = Path(__file__).resolve().parents[1] / "src" / "navigation.rs"
+    page_names = re.findall(r'md_page!\("([^"\n]+)"\)', registry.read_text())
+    urls = sorted({base, *(urljoin(base, name + "/") for name in page_names)})
     failures = []
     pages = {}
     with ThreadPoolExecutor(max_workers=6) as pool:

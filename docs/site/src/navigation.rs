@@ -35,19 +35,6 @@ pub fn documentation() -> Vec<(&'static str, Vec<GuideItem>)> {
             vec![
                 GuideItem::Page(md_page!("guides/overview")),
                 GuideItem::SubCategory {
-                    title: "Coming from another framework",
-                    pages: vec![
-                        md_page!("coming-from/overview"),
-                        md_page!("coming-from/rust-for-web-developers"),
-                        md_page!("coming-from/django"),
-                        md_page!("coming-from/laravel"),
-                        md_page!("coming-from/rails"),
-                        md_page!("coming-from/spring-boot"),
-                        md_page!("coming-from/axum"),
-                        md_page!("coming-from/actix-web"),
-                    ],
-                },
-                GuideItem::SubCategory {
                     title: "Fundamentals",
                     pages: vec![
                         md_page!("guides/projects"),
@@ -147,6 +134,19 @@ pub fn documentation() -> Vec<(&'static str, Vec<GuideItem>)> {
                         md_page!("guides/reusable-apps"),
                         md_page!("guides/custom-components"),
                         md_page!("guides/management-commands"),
+                    ],
+                },
+                GuideItem::SubCategory {
+                    title: "Coming from another framework",
+                    pages: vec![
+                        md_page!("coming-from/overview"),
+                        md_page!("coming-from/rust-for-web-developers"),
+                        md_page!("coming-from/django"),
+                        md_page!("coming-from/laravel"),
+                        md_page!("coming-from/rails"),
+                        md_page!("coming-from/spring-boot"),
+                        md_page!("coming-from/axum"),
+                        md_page!("coming-from/actix-web"),
                     ],
                 },
             ],
