@@ -91,3 +91,17 @@ this change does not submit a discussion or contact anyone.
 [Laravel community](https://laravel.com/community) informed the separation of discovery,
 participation, and help. They are unversioned community pages, not framework feature
 references. Microsoft PDF page 18 informed short descriptions and direct invitations.
+
+### Showcase screenshots
+
+Captured public landing pages on September 29, 2026, in Chromium at 1280 × 800:
+
+- `blog-20260929.jpg`: https://mackow.ski/ — Mateusz Maćkowski’s blog.
+- `chombogen-20260929.jpg`: https://hand.chombo.club/ — ChomboGen’s initial generator form.
+- `cot-20260929.jpg`: https://cot.rs/ — the Cot homepage.
+
+These are unaltered browser captures, not mockups. The depicted sites and branding belong to their respective creators; inclusion does not imply endorsement. The cards link to each original site. Brewnerator was removed because its listed GitHub repository returned 404 during this check; restore it when a public project link and preview are available.
+
+Images live in `docs/site/static/static/images/community/` and are embedded by the runner’s `ShowcaseAssets` app, so deployment needs no external image service. Use a new dated filename when replacing a screenshot because static files have a long cache lifetime. Each card supplies dimensions, descriptive alt text, and a responsive image. Future submissions request a screenshot and text alternative.
+
+Applied Microsoft’s “Responsive content” guidance (bundled PDF, page 1096): images fit small screens and have text alternatives. The existing Django/Laravel community-page comparison still applies; this change adds visual previews without changing the page’s discovery purpose.

@@ -8,22 +8,18 @@ See what people are building with Cot—from personal websites to tools for a fa
 
 <div class="doc-card-grid">
 <div class="doc-card">
+<img src="/static/images/community/blog-20260929.jpg" class="img-fluid rounded mb-3" width="1280" height="800" loading="lazy" decoding="async" alt="Mateusz Maćkowski’s blog, showing a list of articles about Cot and Rust.">
 <strong>Mateusz Maćkowski’s blog</strong>
 <span>Personal website · Open source</span>
 <p>A developer’s blog, with its implementation available to explore alongside the published site.</p>
 <p><a href="https://mackow.ski/">Visit the blog ↗</a> · <a href="https://github.com/m4tx/m4txblog">Browse source ↗</a></p>
 </div>
 <div class="doc-card">
+<img src="/static/images/community/chombogen-20260929.jpg" class="img-fluid rounded mb-3" width="1280" height="800" loading="lazy" decoding="async" alt="ChomboGen’s Riichi Hand Generator, with a tile set selector and hand input.">
 <strong>ChomboGen</strong>
 <span>Image generation · Open-source backend</span>
 <p>A tool that generates images of Riichi Mahjong hands. Cot powers its backend.</p>
 <p><a href="https://hand.chombo.club/">Try ChomboGen ↗</a> · <a href="https://github.com/m4tx/chombo-gen/tree/master/chombo-gen-backend">Browse backend ↗</a></p>
-</div>
-<div class="doc-card">
-<strong>Brewnerator</strong>
-<span>Recipe viewer · Experimental</span>
-<p>An experimental beer recipe viewer. Explore its repository to see a Cot application built around a specific hobby.</p>
-<p><a href="https://github.com/brewnerator/brewnerator">Browse source ↗</a></p>
 </div>
 </div>
 
@@ -33,6 +29,7 @@ These projects are listed in [Cot’s official FAQ](https://cot.rs/faq/#what-web
 
 <div class="doc-card-grid">
 <div class="doc-card">
+<img src="/static/images/community/cot-20260929.jpg" class="img-fluid rounded mb-3" width="1280" height="800" loading="lazy" decoding="async" alt="The Cot homepage, with its introduction and links to get started and browse GitHub.">
 <strong>The Cot website</strong>
 <span>Documentation · Open source</span>
 <p>Cot’s own website runs on Cot. Its renderer lives in cot-site, while the framework repository holds the documentation pages.</p>
@@ -47,6 +44,7 @@ Built something with Cot? Start a [GitHub discussion](https://github.com/cot-rs/
 Include:
 
 - **Project name and link:** a public website, repository, or demo.
+- **Screenshot:** a clear view of the project’s main screen, with a short description for readers who can’t see the image. Use an image you have permission to share, and remove any private information.
 - **What it does:** one or two sentences about the problem it solves.
 - **Where Cot fits:** the whole application, an API, or another backend component.
 - **Project stage:** an experiment, a learning project, or an application people can use.
