@@ -77,3 +77,17 @@ Before sharing, run the documentation snippet suite, companion application tests
 - Browser: desktop/mobile navigation, tutorial sequence, status labels, search, Rustdoc links, on-page contents, and overflow checks passed. Desktop explanation and mobile proposed-feature screenshots were inspected.
 
 These checks validate the documentation and bounded examples. They do not implement the Proposed framework capabilities or establish production readiness of the tutorial companion. Existing compiler warnings remain in the selected minimal-feature framework build.
+
+## Community showcase
+
+Added `community/showcase` under the existing Community section, with links from
+its overview and the documentation home. Existing URLs are unchanged. Real entries
+come from [Cot's FAQ](https://cot.rs/faq/), checked September 29, 2026; no placeholder
+projects, usage figures, or maintenance claims were invented. Cot's own website is
+separated from the community project cards. Submission links open GitHub discussions;
+this change does not submit a discussion or contact anyone.
+
+[Django community](https://www.djangoproject.com/community/) and
+[Laravel community](https://laravel.com/community) informed the separation of discovery,
+participation, and help. They are unversioned community pages, not framework feature
+references. Microsoft PDF page 18 informed short descriptions and direct invitations.

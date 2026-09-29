@@ -17,6 +17,7 @@ Choose a learning path, understand a feature, or find the exact API you need.
 
 | If you're here to… | Start with… |
 | --- | --- |
+| Explore what others have built | [Community showcase](community/showcase/) |
 | Bring experience from another framework | [Framework transition guides](coming-from/overview/) |
 | Run your first project | [Installation](installation/) |
 | Understand the request lifecycle | [Application lifecycle](guides/lifecycle/) |

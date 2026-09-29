@@ -4,6 +4,15 @@ title: Community and contributing
 
 Cot is developed in the open. A useful report or contribution makes the problem reproducible and gives maintainers enough context to evaluate it.
 
+## Built with Cot
+
+Discover [projects built by the community](../showcase/), explore their source, and find ideas for your own application.
+
+<div class="doc-card-grid">
+<a class="doc-card" href="../showcase/"><strong>Explore the showcase</strong><span>Websites, tools, and experiments built with Cot.</span></a>
+<a class="doc-card" href="../showcase/#share-your-project"><strong>Share your project</strong><span>Tell the community what you’ve made and how Cot fits.</span></a>
+</div>
+
 ## Get help
 
 Use [GitHub discussions](https://github.com/cot-rs/cot/discussions) for questions and design conversations. Include the Cot version, relevant configuration, and a small example when behavior is unclear.

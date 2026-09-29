@@ -203,6 +203,7 @@ pub fn documentation() -> Vec<(&'static str, Vec<GuideItem>)> {
             "Community",
             vec![
                 GuideItem::Page(md_page!("community/overview")),
+                GuideItem::Page(md_page!("community/showcase")),
                 GuideItem::Page(md_page!("framework-comparison")),
             ],
         ),
