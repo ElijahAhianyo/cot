@@ -20,3 +20,19 @@ The remaining reference pages help you find configuration, commands, and build s
 ## Match the version
 
 The Rustdoc link opens the latest published crate. This prototype follows the development checkout, which may contain newer APIs. Generate Rustdoc from the matching checkout when checking unreleased interfaces.
+
+## Generate reference material for your checkout
+
+From the Cot workspace, build the crate's documentation:
+
+```bash
+cargo doc -p cot --all-features --no-deps
+```
+
+Open the generated `target/doc/cot/index.html` using the target directory configured for that build. `--all-features` includes optional public interfaces; a particular application may enable fewer features.
+
+For application work, match the dependency version and selected features before copying an API example. The guides explain how components fit together, while Rustdoc specifies what a particular item accepts and returns.
+
+## Find the fact you need
+
+Use configuration reference for the setting's owning type, CLI reference for the executable and command context, and the component index for a public module. If the question is why two settings interact or how to complete a task, follow the related guide rather than trying to infer the workflow from a signature alone.

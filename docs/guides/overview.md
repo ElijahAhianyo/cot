@@ -10,6 +10,12 @@ For a guided project, use [tutorials](../../tutorials/overview/). For a particul
 
 The [transition guides](../../coming-from/overview/) explain familiar concepts and important differences for Django, Laravel, Rails, Spring Boot, Axum, and Actix Web readers. They include a shared introduction to Rust for web developers.
 
+## Finding the right boundary
+
+A request can fail during routing, extraction, validation, authorization, persistence, or response rendering. The topic groups below follow those responsibilities. Start with the one closest to your question, then follow the contextual links when the explanation crosses into another subsystem.
+
+The examples begin with small cases and continue into limits such as concurrent requests, retries, and unavailable dependencies. Proposed labels identify designs for capabilities that are not currently built in; they are separate from a page's place in this directory.
+
 ## Fundamentals
 
 - [Projects and apps](../../guides/projects/)

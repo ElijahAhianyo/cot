@@ -3,22 +3,54 @@ title: Performance and scaling
 status: preview
 ---
 
-Scaling starts with knowing which resource limits useful work. More application instances do not fix every slow query, and a faster handler does not make a slow external service respond sooner.
+Performance is the cost of delivering a useful result. For a catalog page, that includes database work, rendering, response size, and the time the browser spends loading assets. A faster handler alone may not make the page noticeably faster.
 
-## Measurement
+Start with a concrete goal. “The first catalog page should remain responsive with the expected concurrent visitors” gives us a workload and an outcome to measure. “Make Cot fast” does not.
 
-Measure latency distributions and throughput under representative requests. Separate compilation time, startup time, and steady-state request behavior; they describe different user experiences.
+## Establish a baseline
 
-## Concurrency and shared resources
+Measure a representative release build with realistic data. Record response latency, error rate, throughput, memory, and the dependencies involved. Keep the workload repeatable so a later measurement can be compared fairly.
 
-Async execution allows requests to overlap while waiting. Pools and downstream services still have finite capacity. Excess concurrency can increase waiting and memory use without increasing completed work.
+Include cold and warm behavior when both matter. A page that is fast only after a cache is populated may still be slow after every deployment or idle restart.
 
-## Several instances
+## Find where time goes
 
-Shared sessions, cache consistency, uploads, and background work need explicit coordination when requests can reach different processes. A deployment should be tested under the failure conditions it is intended to tolerate.
+| Observation | Possible next investigation |
+| --- | --- |
+| Many short queries per page | Relationship loading and repeated lookups |
+| Few queries but long database time | Execution plans, indexes, and locks |
+| Low CPU with slow responses | I/O waits, connection pools, or external calls |
+| High CPU with small responses | Serialization, templates, compression, or computation |
+| Rising memory with traffic | Unbounded bodies, result sets, caches, or buffers |
 
-## Related reading
+These are hypotheses, not diagnoses. Use traces and controlled changes to confirm them. [Query performance](../../guides/query-performance/) covers database-specific work.
 
-- [Async and shared state](../../guides/async-state/).
-- [Query performance](../../guides/query-performance/).
-- [Caching](../../caching/).
+## Bound work per request
+
+Limit collection queries, upload sizes, and external calls. A single endpoint that accepts an arbitrarily large batch can consume the capacity intended for many ordinary visitors.
+
+Async execution helps overlap waits; it does not remove resource limits. Starting more concurrent work can increase contention and latency once the database or provider is saturated.
+
+## Cache with a freshness policy
+
+A cache saves repeated work at the cost of deciding when a result is stale. For a catalog, a short delay in a descriptive field may be acceptable; a checkout stock decision may need authoritative data.
+
+Key cached results by every dimension that changes their meaning, including authorization scope or locale where relevant. Define the miss path and backend-failure path. A cache outage shouldn't trigger unlimited identical expensive recomputations without a plan.
+
+See [caching](../../caching/) for the implemented interfaces. A cache should follow an understood access pattern, not hide an unexplained query problem.
+
+## Scale the limiting resource
+
+Adding web instances helps only if the web layer is the constraint. If all instances wait on one saturated database, adding more can make the database queue longer. Connection limits, background workers, and request concurrency must fit the shared capacity.
+
+Process-local state also changes with replication. A local cache may duplicate work; a local session store may break login continuity. Performance and correctness need to be reviewed together.
+
+## Measure the browser too
+
+Large images, blocking scripts, and excessive asset requests can dominate perceived page time. Serve appropriately sized media and use release-compatible asset URLs. A server benchmark that discards the response body doesn't measure this experience.
+
+## Keep improvements accountable
+
+After a change, rerun the same workload and compare both speed and correctness. Keep the measurements with the change's rationale. Avoid broad claims such as “twice as fast” without stating the workload, environment, and metric.
+
+The [observability guide](../../guides/observability/) explains the evidence, while [deployment](../../guides/deployment/) covers resource boundaries.

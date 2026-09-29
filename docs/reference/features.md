@@ -28,3 +28,29 @@ The current default set is `sqlite`, `postgres`, `mysql`, and `json`. The `full`
 ## Release-specific details
 
 Consult the selected release's Cargo manifest and [Rust API](https://docs.rs/cot/latest/cot/) when choosing a version. The [upgrade guide](../../upgrade-guide/) covers application changes between releases.
+
+## Feature dependencies
+
+Enabling `sqlite`, `postgres`, or `mysql` also enables Cot's shared `db` support. `redis` enables `cache` and `json`; `cache` itself depends on `json`. `openapi` enables JSON and schema integration, while `swagger-ui` also enables `openapi`.
+
+The current `full` set includes the default backends and JSON, plus `fake`, `live-reload`, `test`, `cache`, `redis`, and `email`. It does not include `openapi` or `swagger-ui`. Check the manifest when a capability appears unavailable despite using `full`.
+
+`fake` enables support for generated sample values. It is not a durable seeding command or a guarantee that generated data respects your application's business constraints. `test` exposes testing helpers; enabling it does not execute the application's tests.
+
+## Inspect the selected graph
+
+From your application directory, inspect the features Cargo actually resolved:
+
+```bash
+cargo tree -e features -i cot
+```
+
+Cargo features are additive across uses of the same package in the dependency graph. Disabling default features in one dependency declaration does not remove a feature enabled by another dependency. Inspect the graph when a supposedly disabled backend still appears in the build.
+
+A minimal application should choose the capabilities it uses, then verify that combination in CI. An example that compiles with `full` does not prove it compiles with a narrower selection.
+
+## Compatibility has several boundaries
+
+Keep the Cot crate, generator, and documentation versions aligned. Review the Rust minimum version, target platform, native libraries, and dependent service versions when preparing a release. A compatible Cargo version requirement alone does not establish database schema or session compatibility between deployed application versions.
+
+For a local checkout, generate the API documentation with the features used by your application. An item hidden behind a disabled feature may be absent from local Rustdoc even though it appears in the all-features published documentation.

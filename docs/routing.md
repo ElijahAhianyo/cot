@@ -361,3 +361,11 @@ If both paths already have handlers, neither needs a redirect. The middleware on
 Middleware and routing are separate layers. Calling `Router::handle` directly in a test checks routing without running this middleware; a complete test application includes the middleware chain.
 
 The [testing guide](../testing/) covers requests through routers and complete applications. Custom responses to routing and handler errors are covered in [error pages](../error-pages/). For routes that also describe an API, see the API-specific handler constructors in the [OpenAPI guide](../openapi/).
+
+## Route matching and resource access
+
+A matched route establishes which handler can process the request. It doesn't establish that the requested record exists or that the current user may access it.
+
+For `/orders/42`, there are three separate questions: does the path select the order handler, can `42` be extracted as the handler's ID type, and may the current actor read that stored order? Keeping those boundaries separate helps us choose the right response and the right test.
+
+The [request guide](../guides/requests/) explains extraction, [authorization](../guides/authorization/) explains resource decisions, and [diagnose a route mismatch](../how-to/diagnose-routing/) provides a focused troubleshooting procedure.

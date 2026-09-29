@@ -1,0 +1,16 @@
+[package]
+name = "issue_tracker"
+version = "0.1.0"
+edition = "2024"
+publish = false
+default-run = "issue_tracker"
+
+[dependencies]
+cot = { path = "../../../../cot", features = ["sqlite", "test", "json"], default-features = false }
+
+serde = { version = "1", features = ["derive"] }
+
+[dev-dependencies]
+tempfile = "3"
+
+[workspace]

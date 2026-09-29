@@ -3,36 +3,55 @@ title: Background tasks
 status: proposed
 ---
 
-Some work does not need to finish before an HTTP response is returned. Sending a notification or generating a large export can continue independently, provided the work is recorded durably and its outcome can be observed.
+Background tasks let a request hand work to a worker instead of keeping the caller waiting for the work to finish. An order-history export is a useful example: preparing thousands of rows can take longer than the browser should wait for an ordinary response.
 
-## Tasks, queues, and workers
+This page describes the proposed durable task system. Cot's current CLI tasks and an in-process async spawn are different mechanisms; neither should be mistaken for the queue contract described here.
 
-A task describes work. A queue records pending work. A worker claims and executes it. Returning a successful enqueue response should mean that the work has been accepted, not that it has already succeeded.
+## Task, queue, and worker
+
+A task describes the work. A queue stores pending work. A worker claims a task, executes it, and records the outcome. The request's responsibility is to establish that the work was accepted durably before telling the user that an export is underway.
+
+An illustrative task payload is deliberately small:
+
+```text
+Task: export_orders
+Task ID: export-73
+Customer ID: 7
+Cutoff: 2026-09-01T00:00:00Z
+Format: CSV
+Payload version: 1
+```
+
+The payload contains owned values, not a borrowed HTTP request or an open transaction. A worker loads the resources it needs when it executes the task. Decide whether it should use current account permissions or a deliberately captured authorization context; don't leave that question implicit.
+
+## Accepted is not complete
+
+After acceptance, the application can return an export ID and a status URL. The status may move through pending, running, completed, and failed states. A completed export also needs a defined file location, access policy, and retention period.
+
+If the queue is unavailable, returning “export started” would be misleading. If the response is lost after acceptance, a client retry needs a way to recover the original export rather than create another one.
 
 ## Retries and idempotency
 
-A worker can finish an external operation and fail before recording completion. A retry may then run the operation again. An idempotency key or another domain-specific check can prevent duplicate effects; retries alone cannot guarantee exactly-once delivery.
+A worker can finish a side effect and crash before recording success. When the task is delivered again, repeating the side effect may create a second file, send another email, or charge a customer twice.
+
+Idempotency means recognizing repeated execution as the same operation. For the export, use its stable task identity to find an existing result or safely replace an incomplete attempt. For external providers, use their supported idempotency mechanism and understand its retention period.
+
+Retries do not imply exactly-once execution. Set a maximum attempt policy and distinguish temporary failures from permanent input or permission failures.
 
 ## Transactions and dispatch
 
-Enqueuing an email before its order transaction commits can expose a record that is later rolled back. A mature integration needs a deliberate boundary between committed data and dispatched work.
+Enqueuing work before a database transaction commits can let a worker observe data that does not exist yet. Enqueuing after commit leaves another gap: the commit can succeed and the process can stop before dispatch.
 
-## Failure and visibility
+An outbox is one possible design. The application records the intended event in the same database transaction as the order; a separate dispatcher transfers it to the queue. The dispatcher still needs repeat-safe delivery. This is an architectural pattern, not a built-in Cot API.
 
-Operators need to see attempts, terminal failures, and work waiting too long. An export should have a visible status and a recoverable failure, rather than leave the user waiting indefinitely.
+## Timeouts and ownership
 
-## Illustrative lifecycle
+A worker timeout and a queue's claim timeout must agree. If the claim expires while the original worker is still active, two workers can execute the same task. Long operations may need a supported lease-renewal protocol or smaller units of work.
 
-| Stage | Export example |
-| --- | --- |
-| Accepted | Record the requested date range and requester. |
-| Running | A worker produces the export. |
-| Retrying | A temporary storage failure schedules another attempt. |
-| Completed | Save the result and notify the requester. |
-| Failed | Record an actionable terminal error. |
+A process-local mutex cannot coordinate workers on different machines. Use the queue or shared backend's documented mechanism.
 
-## Related reading
+## Deployments and failed work
 
-- [Sending email](../../sending-emails/).
-- [Transactions](../../databases/transactions/).
-- [Scheduled tasks](../../guides/scheduling/).
+Workers can receive tasks written by an older application revision. Include a payload version when the shape may change, and plan compatibility while old and new workers overlap. Don't delete fields that queued work still needs without a transition.
+
+Operators need attempt history, terminal failures, and a controlled retry path. Users need a visible status and a useful next action. See [scheduled tasks](../../guides/scheduling/), [events](../../guides/events/), and [queued email](../../how-to/queued-email/) for related designs.

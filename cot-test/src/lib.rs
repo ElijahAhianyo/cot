@@ -268,6 +268,7 @@ pub enum TestLanguage {
     Rust,
     Toml,
     AskamaTemplate,
+    Text,
     Bash,
     Html,
 }
@@ -280,6 +281,7 @@ impl TryFrom<&str> for TestLanguage {
             "rust" => Ok(Self::Rust),
             "toml" => Ok(Self::Toml),
             "html.j2" => Ok(Self::AskamaTemplate),
+            "text" => Ok(Self::Text),
             "bash" => Ok(Self::Bash),
             "html" => Ok(Self::Html),
             _ => Err(TestLanguageFromStringError(value.to_string())),

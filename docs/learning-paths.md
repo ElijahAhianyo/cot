@@ -23,3 +23,22 @@ The [how-to collection](../how-to/overview/) starts from tasks such as testing a
 ## Looking up an API
 
 Use [Rustdoc](https://docs.rs/cot/latest/cot/) for types, traits, methods, and macros. The [reference index](../reference/overview/) also points to configuration, CLI commands, and Cargo features.
+
+## Maintain a running service
+
+Start with [production configuration](../guides/production/), [observability](../guides/observability/), and [recovery](../guides/recovery/). These pages connect the executable to the database, external services, rollout process, and operator decisions. Use the [release index](../releases/overview/) when planning an upgrade.
+
+## Choose the depth you need
+
+| Your question | Useful material |
+| --- | --- |
+| Can I see this working? | A tutorial and its companion application |
+| Why does it behave this way? | An explanation guide with examples and edge cases |
+| How do I finish this task? | A how-to with prerequisites and verification |
+| What does this method accept? | The matching version's Rustdoc |
+
+For example, a missing issue can lead to the routing explanation, a route-mismatch procedure, or the `Path` extractor reference. Pick the document that answers the question you have now. You don't need to read the surrounding sidebar from top to bottom.
+
+## Experiment with proposed capabilities
+
+Pages labeled Proposed describe target designs for features the framework does not currently supply. They can help evaluate architecture and future documentation, but an application using them today needs a concrete external integration or application implementation. Check the availability label before looking for a dispatch or seeding API.

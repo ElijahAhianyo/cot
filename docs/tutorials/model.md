@@ -3,22 +3,63 @@ title: Model an issue
 status: preview
 ---
 
-We'll give the tracker something to store: an issue with a title and a description. This chapter preview shows the learning sequence and checkpoints; the linked model and migration guides contain the current API examples.
+Our issue needs a stable identifier, a short title, and enough detail to reproduce the problem. We'll inspect that model, connect it to the migration that creates its table, and check that the record outlives the server process.
 
-## Define the first record
+Continue in the [companion application's directory](../first-app/). Keep using the same working directory when starting the server, because the development database path is relative to it.
 
-Start with the smallest useful issue: an identifier, a title, and a description. Leave comments and attachments out of this chapter so we can see the relationship between one model and one stored record.
+## Read the model
 
-The [model guide](../../databases/overview/) shows Cot's field declarations and primary-key conventions. Use those declarations for the issue rather than introducing a tutorial-specific data layer.
+Open `src/models.rs`. It contains:
 
-## Create the schema
+```rust
+use cot::db::{Auto, model};
 
-Generate the migration for the model and inspect the resulting schema change before applying it. The [migration guide](../../databases/migrations/) describes the current command and migration workflow.
+#[derive(Debug)]
+#[model]
+pub struct Issue {
+    #[model(primary_key)]
+    pub id: Auto<i64>,
+    pub title: String,
+    pub description: String,
+}
+```
 
-## Store and retrieve an issue
+`#[model]` connects the struct to Cot's ORM. The primary key identifies one row, and `Auto<i64>` lets the database assign it during insertion. We don't ask a person reporting an issue to choose that ID.
 
-Create an issue titled “The sign-in button is hard to find,” then retrieve it by its identifier. [Queries](../../databases/queries/) provides the insertion and lookup examples this chapter builds on.
+The title and description are stored as strings. The form will impose input lengths in a later chapter. A model's storage type and a form's validation policy answer different questions; a string field alone doesn't establish a useful title length.
 
-## Checkpoint
+## Inspect the migration
 
-The record should still exist after the application restarts. An in-memory list alone does not meet this checkpoint. The complete chapter will include the exact model, generated migration, and executable assertions.
+Open `src/migrations/m_0001_initial.rs`. Find the operation creating `issue_tracker__issue`, then locate the `id`, `title`, and `description` fields. The ID has the primary-key and automatic-value settings corresponding to the model.
+
+Now open `src/migrations.rs`. It includes that migration in `MIGRATIONS`. Finally, find `IssuesApp::migrations` in `src/main.rs`; it returns the registered migration list to Cot. All three connections matter: defining a struct alone doesn't create the table.
+
+The companion already includes the generated migration. When changing a model in your own project, generate a new migration with a matching Cot CLI:
+
+```bash
+cot migration make
+```
+
+Run that command from the application directory. Review the generated operation before starting against data you care about. Do not rewrite an already-applied initial migration to pretend the database always had the new shape.
+
+## Follow an insertion
+
+In `create_issue`, the valid form becomes a new `Issue` with `Auto::auto()` as its initial ID. `insert(&db).await?` writes the row and updates the model with its generated key.
+
+The handler uses that key in the redirect. This is why the browser reaches the particular issue it just created rather than an arbitrary position in the list. A failed insert propagates an error; it shouldn't produce a successful redirect that points at a nonexistent record.
+
+For related insertion and update examples, see [queries](../../databases/queries/). We use insertion here because reporting an issue creates a new resource.
+
+## Check persistence
+
+Run the application and create two issues with different titles. Open each detail page and note its URL. Stop the server, then start it again from the same directory.
+
+Both issues should still appear, and their detail URLs should identify the same records. The companion configures `sqlite://issue-tracker.sqlite3?mode=rwc` for ordinary runs. Its tests use an isolated temporary SQLite file instead, so they don't change your browser's learning data.
+
+If the list appears empty after a restart, check the working directory and selected database before adding another migration. Starting against a different file can look like data loss even though the original file still exists.
+
+## Keep the first model small
+
+Comments, attachments, and owners would introduce relationships and permission rules. We can add those after the basic storage and request boundaries are clear. The [relationship guide](../../guides/relationships/) explains how those associations change queries and lifecycle decisions.
+
+Next, [display the saved issues](../views/) and distinguish an invalid identifier from an identifier that has no record.

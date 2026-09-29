@@ -3,21 +3,53 @@ title: Account lifecycle
 status: preview
 ---
 
-An account has a lifetime beyond the moment a password is checked. Registration, verification, recovery, and deletion affect both the user’s access and the data associated with that account.
+An account lasts longer than a login session. Customers register, verify an address, change credentials, lose access, and sometimes leave the service. Each transition changes what the application should trust.
 
-## Registration and verification
+We'll follow a customer registering for our shop. Cot supplies authentication and user-model building blocks; the complete registration, verification, and recovery flows described here are application design, not a claim that every screen or token API is built in.
 
-Creating a user record and verifying control of an email address are different operations. A verification token needs a defined lifetime and must be bound to the intended account and address.
+## Registration and account state
 
-## Recovery
+A submitted email address is not yet evidence that the person controls that mailbox. We can represent registration and verification as separate states rather than treating every newly created row as fully trusted.
 
-Password recovery changes the credentials that protect an account. A mature flow needs to account for token expiry, repeated requests, and the effect on existing sessions without revealing unnecessary account information.
+An illustrative state model is:
 
-## Disabling and deletion
+| State | Example capability | Transition |
+| --- | --- | --- |
+| Pending verification | Request a new verification email | Valid verification is consumed |
+| Active | Place orders under the account policy | Suspension or deletion is requested |
+| Suspended | Use an approved recovery/support path | Authorized reinstatement |
+| Closed | No new account activity | Retention policy determines stored records |
 
-A disabled account may retain data without allowing new sessions. Deletion can involve ownership transfers, retention rules, and media cleanup. This preview describes the intended guide; it does not claim Cot supplies every account workflow.
+These names belong to the example application. Choose states around actual permissions rather than adding flags without defining what they change.
 
-## Related reading
+## Verification links
 
-- [Authentication](../../guides/authentication/).
-- [Authorization](../../guides/authorization/).
+A verification token should identify one purpose and expire. A token issued to verify an address should not also reset a password. If the customer changes the pending address, an older link must not verify the new address accidentally.
+
+The response after consuming a link should make its outcome clear: verified, already used, expired, or invalid according to the application's disclosure policy. Avoid placing secrets or full tokens in logs and analytics URLs.
+
+## Password recovery
+
+Recovery is a way to regain control, so it deserves the same care as login. The request endpoint should avoid unnecessarily revealing which addresses have accounts. The token must be time-limited and usable only for the intended operation.
+
+After the password changes, decide what happens to existing sessions. Keeping all sessions may surprise a person recovering from compromise; invalidating all sessions may require the current browser to sign in again. State and test the chosen policy.
+
+A successful email-provider call is not proof that the message reached the inbox. Provide a bounded resend path without allowing unlimited messages to arbitrary recipients.
+
+## Changing an email address
+
+Treat the current verified address and proposed replacement as different values. Updating the primary address before verifying the replacement can remove the user's working recovery route.
+
+Sensitive changes may require recent authentication rather than merely an old valid session. Record the change in an audit trail using identifiers and relevant outcomes, without copying passwords or verification tokens.
+
+## Suspension and deletion
+
+Suspension changes access; it doesn't necessarily delete stored orders. Deletion may involve anonymizing personal information while retaining records required by the application's legitimate retention policy. Decide how attachments, exports, notifications, and backups participate.
+
+A page that hides the account isn't enough if API credentials or existing sessions still work. Every entry point needs to enforce the account's current state.
+
+## Failure cases worth testing
+
+Test expired and repeated links, a changed address, two recovery requests in succession, and a suspended account with an existing session. Check that concurrent attempts cannot consume a one-time token twice.
+
+For implemented authentication operations, use [authentication](../../guides/authentication/). For intended abuse controls and asynchronous delivery, see [rate limiting](../../guides/rate-limiting/) and [background tasks](../../guides/background-tasks/), both clearly marked as proposed capabilities.

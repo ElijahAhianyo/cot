@@ -26,10 +26,16 @@ Choose a learning path, understand a feature, or find the exact API you need.
 
 ## From the blog
 
-[Why framework transition guides belong in the docs](blog/framework-transition-guides/) explores the distinction between a familiar starting point and a second copy of the feature documentation. Visit the [blog](blog/overview/) for the sample article and planned editorial scope.
+[Why framework transition guides belong in the docs](blog/framework-transition-guides/) explores the distinction between a familiar starting point and a second copy of the feature documentation. Visit the [blog](blog/overview/) for design discussions and their context.
 
 ## About this preview
 
-This is an interactive proposal for Cot's documentation as the framework grows. Existing guides sit alongside sample chapters and explanatory pages. **Preview** marks draft documentation. **Proposed** marks a feature that Cot does not currently provide. Unmarked existing pages retain their current content.
+This is an interactive proposal for Cot's documentation as the framework grows. Existing guides sit alongside expanded explanation pages and tutorials with runnable companion applications. **Preview** marks draft documentation. **Proposed** marks a feature that Cot does not currently provide. Unmarked existing pages retain their current content.
 
 The [Rust API](https://docs.rs/cot/latest/cot/) remains the authoritative API reference for published releases. The development checkout can differ from that release.
+
+## Follow a request through the framework
+
+For a useful overview, read [projects and apps](guides/projects/), then [routing](routing/), [requests](guides/requests/), and [responses](guides/responses/). These pages connect application composition to what happens when a browser or API client sends a request.
+
+When the request changes data, continue with [queries](databases/queries/), [transactions](databases/transactions/), and [authorization](guides/authorization/). When preparing to run it for other people, use [testing](guides/http-tests/) and [deployment](guides/deployment/). You can enter at any of these points without completing a course first.

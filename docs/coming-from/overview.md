@@ -31,3 +31,15 @@ The framework pages use small cases like this to explain the boundaries. For an 
 ## Read the availability labels
 
 This documentation preview includes proposed capabilities such as background tasks, rate limiting, and seeding. Their presence in the sidebar does not mean Cot provides them. Follow the current feature documentation and Rust API when deciding whether an application can move today.
+
+## Plan around behavior, not file counts
+
+For a candidate feature, write down its inputs, observable outputs, owned data, and external effects. Include malformed input, permission denial, missing records, retries, and simultaneous requests. Those cases make a migration boundary concrete.
+
+A read-only catalog may be independently replaceable. Checkout often depends on account identity, inventory, payment state, and email delivery. Choose the boundary with those dependencies visible, then decide which service owns each write during the transition.
+
+## Keep one source of authority
+
+If both applications use the same database, assign schema changes to one migration process. If both can receive the same operation, define how they recognize duplicates. If users move between them, decide whether identity is shared through a supported protocol or established separately.
+
+The comparison pages help locate Cot's equivalents and differences. They do not establish wire compatibility for cookies, password encodings, serialized jobs, or internal model representations.

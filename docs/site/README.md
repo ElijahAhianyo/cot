@@ -43,9 +43,9 @@ docker build -t cot-site . && docker run -p '8000:8000' --rm -it cot-site
 ## Documentation architecture preview
 
 The development documentation at `/guide/master/` is an interactive prototype of
-Cot's proposed documentation structure. It contains existing guides and 73 sample
-pages. It does not implement the proposed framework features or constitute a
-complete tutorial course.
+Cot's proposed documentation structure. It contains existing guides and 74 expanded new pages, including routing.
+The tutorial companion provides three runnable applications. Proposed framework
+features remain design documentation, not implemented integrations.
 
 - `src/navigation.rs` registers documentation areas, topic groups, and pages.
   Sidebar grouping is independent of page URLs.
@@ -53,7 +53,7 @@ complete tutorial course.
   breadcrumbs, page types, status labels, and the on-page contents list.
 - Rustdoc remains the API reference. The reference pages here index configuration,
   CLI commands, Cargo features, and component modules.
-- New Markdown frontmatter may use `status: preview` for sample documentation or
+- New Markdown frontmatter may use `status: preview` for draft documentation or
   `status: proposed` for an explicitly unsupported feature. Omitting `status`
   preserves existing page rendering. These states appear in both the sidebar and
   the page notice; they are separate from the selected Cot version.
@@ -116,11 +116,9 @@ Representative page research:
 | Background tasks | [Tasks](https://docs.djangoproject.com/en/6.0/topics/tasks/) | [Queues](https://laravel.com/framework/docs/13.x/queues) | Distinguish acceptance, execution, retry, and completion |
 | Configuration and deployment | [Deployment](https://docs.djangoproject.com/en/6.0/howto/deployment/) | [Configuration](https://laravel.com/framework/docs/13.x/configuration), [deployment](https://laravel.com/framework/docs/13.x/deployment) | Separate framework configuration from operational setup |
 
-The remaining sample pages demonstrate proposed content boundaries using original
-conceptual prose. They are not complete feature-by-feature research or capability
-audits. Before publishing them as finished documentation, verify each against
-Cot's implementation and the corresponding framework examples, replace preview
-outlines with tested material, and review their status labels.
+The expanded feature-by-feature research and source mapping is in
+[the editorial record](editorial/README.md). It includes scope, source versions,
+lessons adopted, unavailable counterparts, and code-validation boundaries.
 
 ### Framework transitions and blog
 
@@ -170,6 +168,6 @@ cargo run --locked -- --listen 127.0.0.1:18080
 ```
 
 Open `http://127.0.0.1:18080/guide/master/`. These commands assume a new parent
-directory, with neither checkout already present. The existing Dockerfile still
-needs a separate deployment update to include both repositories; this branch
-transfer does not deploy the preview or change the production site.
+directory, with neither checkout already present. The [preview deployment recipe](deploy/README.md) includes both repositories
+without publishing crates. Content changes alone do not confirm that a hosted
+service has deployed the new revision.
